@@ -6,7 +6,6 @@ function getQuirkLayerCostBase() {
 
 function getQuirkLayerCost(layers) {
 	if (layers === undefined) layers = player.q.layers
-	if (layers.gte(20)) layers = Decimal.pow(player.h.challs.includes(72)?1.025:1.05, layers.sub(20)).times(20)
 	if (player.ba.upgrades.includes(55)) layers = layers.sub(LAYER_UPGS.ba[55].currently())
 	let base = getQuirkLayerCostBase()
 	let cost = Decimal.pow(base, Decimal.pow(base, layers).sub(1))
@@ -17,7 +16,6 @@ function getQuirkLayerTarg() {
 	let base = getQuirkLayerCostBase()
 	let targ = player.q.points.log(base).add(1).log(base)
 	if (player.ba.upgrades.includes(55)) targ = targ.add(LAYER_UPGS.ba[55].currently())
-	if (targ.gte(20)) targ = targ.div(20).log(player.h.challs.includes(72)?1.025:1.05).add(20)
 	return targ.add(1).floor()
 }
 
@@ -53,10 +51,6 @@ function getQuirkEnergyEff() {
 	let eff = player.q.energy.add(1).pow(2)
 	if (player.q.upgrades.includes(12)) {
 		let mod = player.q.energy.add(1).log10().add(1).log10().add(1)
-		if (mod.gte(2)) {
-			eff = eff.times(mod.div(2).pow(10))
-			mod = new Decimal(2)
-		}
 		eff = eff.pow(mod)
 	}
 	if (player.q.upgrades.includes(32)) eff = eff.pow(2)
@@ -103,7 +97,6 @@ function getSubspaceEff3() {
 	let eff = player.ss.subspace.add(1).log10().add(1).log10().div(2.5).add(1)
 	if (player.ss.upgrades.includes(13)) eff = eff.times(1.5)
 	if (player.sp.upgrades.includes(35)) eff = eff.times(LAYER_UPGS.sp[35].currently())
-	if (eff.gte(2)) eff = eff.log2().add(1)
 	return eff;
 }
 
