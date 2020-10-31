@@ -40,9 +40,7 @@ let LIFE_BOOSTERS = {
 
 		let power = player.l.power
 		if (power.gt(1)) power = power.root(exp)
-		if (power.gt(cap)) power = power.div(cap).pow(1/capExp).times(cap)
 		power = power.add(getLifePowerMult().times(diff))
-		if (power.gt(cap)) power = power.div(cap).pow(capExp).times(cap)
 		if (power.gt(1)) power = power.pow(exp)
 
 		return power
@@ -80,7 +78,6 @@ let LIFE_BOOSTERS = {
 		reqMult: new Decimal(1.5),
 		eff(str) {
 			let x = Decimal.pow(1e20, str.pow(0.75))
-			if (x.gte("1e400")) x = Decimal.pow(10, x.log10().times(400).sqrt())
 			return x
 		},
 		effDesc(x) {
@@ -151,7 +148,6 @@ let LIFE_BOOSTERS = {
 		req: new Decimal(30),
 		reqMult: new Decimal(15),
 		eff(str) {
-			if (str.gte(10)) str = str.times(10).sqrt();
 			return Decimal.sub(1, Decimal.div(1, str.plus(1).log10().plus(1)));
 		},
 		effDesc(x) {
@@ -229,7 +225,6 @@ let HYPERSPACE = {
 	},
 	nextCapReq(x) {
 		if (x === undefined) x = player.hs.superUpgradeCap
-		if (x.gte(5)) x = x.pow(2).div(5)
 		let req = Decimal.times(x, 200).add(1300)
 		if (player.ma.unl && MACHINES[2].unl()) req = req.sub(MACHINES[2].currently()).max(0)
 		return req;
@@ -284,12 +279,10 @@ function maxHyperspace() {
 let IMPERIUM = {
 	lifeReq() {
 		let bricks = player.i.lifeBricks
-		if (bricks.gte(50)) bricks = Decimal.pow(1.02, bricks.sub(50)).times(50)
 		return Decimal.pow(10, bricks.times(2).sqr().add(15))
 	},
 	lifeTarget() {
 		let target = player.l.power.max(1).log10().sub(15).sqrt().div(2)
-		if (target.gte(50)) target = target.div(50).log(1.02).plus(50)
 		return target.add(1).floor();
 	},
 	canBuild() {
@@ -313,24 +306,19 @@ let IMPERIUM = {
 	cost(x) {
 		if (x === undefined) x = player.i.extraBuildings
 		let sub = player.sp.upgrades.includes(45) ? 3 : 0
-		if (x.gte(20)) x = Decimal.pow(1.05, x.sub(20)).times(20)
 		let ret = {
 			i: x.times(1.75).add(0.5).sub(sub).ceil().max(0),
 			l: x.times(1.5).add(1).sub(sub).ceil().max(0)
 		}
-		if (ret.l.gte(35)) ret.l = ret.l.pow(3).div(Math.pow(35, 2)).ceil()
 		return ret;
 	},
 	target() {
 		let sub = player.sp.upgrades.includes(45) ? 3 : 0
 		let i = player.i.points.plus(sub).sub(0.5).div(1.75)
-		if (i.gte(20)) i = i.div(20).log(1.05).plus(20)
 		let targetI = i.plus(1).floor()
 	
 		let l = player.i.lifeBricks
-		if (l.gte(35)) l = l.times(Math.pow(35, 2)).cbrt();
 		l = l.plus(sub).sub(1).div(1.5)
-		if (l.gte(20)) l = l.div(20).log(1.05).plus(20)
 		let targetL = l.plus(1).floor()
 	
 		return targetI.min(targetL)
