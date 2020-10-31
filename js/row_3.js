@@ -32,7 +32,6 @@ function getEnhancerEff2() {
 
 function getEnhancerCost() {
 	let e = player.e.enhancers
-	if (e.gte(25)) e = e.pow(2).div(25)
 	let cost = Decimal.pow(2, e.pow(1.5))
 	return cost.floor()
 }
@@ -46,7 +45,6 @@ function buyEnhancer() {
 
 function maxEnhancers() {
 	let target = player.e.points.max(1).log(2).root(1.5)
-	if (target.gte(25)) target = target.times(25).sqrt()
 	target = target.add(1).floor()
 	if (target.lte(player.e.enhancers)) return
 	player.e.enhancers = player.e.enhancers.max(target)
@@ -108,7 +106,6 @@ function getTimeEnergyLimitMult() {
 
 function getExtCapsuleCost() {
 	let amt = player.t.extCapsules
-	if (amt.gte(25) && !player.ba.upgrades.includes(43)) amt = amt.pow(2).div(25)
 	let cost = amt.times(0.4).pow(1.2).add(1).times(10)
 	return cost.floor()
 }
@@ -123,7 +120,6 @@ function buyExtCapsule() {
 
 function maxExtTimeCapsules() {
 	let target = player.b.points.add(1).div(10).sub(1).root(1.2).div(0.4)
-	if (target.gte(25)&&!player.ba.upgrades.includes(43)) target = target.times(25).sqrt()
 	target = target.add(1).floor().max(0)
 	player.t.extCapsules = player.t.extCapsules.max(target)
 }
@@ -167,7 +163,6 @@ let SPACE_BUILDINGS = {
 		eff(x) {
 			if (player.s.upgrades.includes(43)) {
 				x = Decimal.pow(1.0001, x).times(x.sqrt())
-				if (x.gte("e600")) x = Decimal.pow(10, x.log10().times(600).sqrt())
 				return x
 			} else return x.sqrt()
 		},
@@ -179,7 +174,6 @@ let SPACE_BUILDINGS = {
 		cost: new Decimal(1e25),
 		eff(x) {
 			x = Decimal.pow(1e18, x.pow(0.9))
-			if (x.gte("e3e9")) x = Decimal.pow(10, x.log10().times(9e18).cbrt())
 			return x
 		},
 		effDesc(x) {
@@ -190,7 +184,6 @@ let SPACE_BUILDINGS = {
 		cost: new Decimal(1e48),
 		eff(x) {
 			let ret = x.add(1).pow(1.25)
-			if (ret.gte(1e6)) ret = ret.log10().times(1e6/6)
 			return ret;
 		},
 		effDesc(x) {
@@ -272,7 +265,6 @@ function getSpaceBuildingCostMult() {
 function getSpaceBuildingCost(x) {
 	let inputVal = SPACE_BUILDINGS[x].cost
 	let bought = tmp.s.sb[x]
-	if (bought.gte(100)) bought = bought.pow(2).div(100)
 	let cost = Decimal.pow(inputVal, bought.times(tmp.s.sbCostMod).pow(1.35)).times(inputVal).times((bought.gt(0)||x>1)?1:0).times(tmp.s.sbCostMult)
 	return cost
 }
@@ -280,7 +272,6 @@ function getSpaceBuildingCost(x) {
 function getSpaceBuildingTarg(x) {
 	let inputVal = SPACE_BUILDINGS[x].cost
 	let target = player.g.power.div(tmp.s.sbCostMult).div(inputVal).max(1).log(inputVal).pow(1/1.35).div(tmp.s.sbCostMod)
-	if (target.gte(100)) target = target.times(100).sqrt()
 	return target.add(1).floor()
 }
 
@@ -424,7 +415,6 @@ function getExtraSB() {
 function getSGenPowEff() {
 	if (!player.sg.unl) return new Decimal(1)
 	let power = player.sg.power
-	if (power.gte("1e625")) power = Decimal.pow(10, power.log10().pow(0.5).times(25))
 	let eff = power.add(1).pow(3)
 	return eff
 }
