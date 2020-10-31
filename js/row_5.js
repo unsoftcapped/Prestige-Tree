@@ -94,13 +94,11 @@ function getSpellPower(x) {
 	if (player.sp.upgrades.includes(23)) power = power.times(LAYER_UPGS.sp[23].currently())
 	if (player.ps.upgrades.includes(13)) power = power.times(LAYER_UPGS.ps[13].currently())
 	
-	if (power.gte(50)) power = power.log10().times(50/Math.log10(50)).min(power)
 	
 	if (player.l.unl && tmp.l !== undefined && tmp.l.lbUnl >= 6) power = power.times(tmp.l.lbEff[6])
 	if (spellActive(10) && x<10) power = power.times(tmp.spellEffs[10]);
 	if (tmp.mb) power = power.times(tmp.mb.spellBoost)
 	
-	if (power.gte(100)) power = power.log10().times(50).min(power)
 	return power.max(1);
 }
 
