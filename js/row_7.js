@@ -96,7 +96,6 @@ const MACHINES = {
 		reward: "All Life Boosters are stronger based on your Best Machine Power.",
 		currently() { 
 			let ret = player.ma.best.plus(1).log10().times(player.ma.enhancements.sqrt().plus(1)).times(tmp.mb ? tmp.mb.machBoost : 1).times(tmp.ma ? tmp.ma.pow : 1).plus(1) 
-			if (ret.gte(26)) ret = ret.log10().times(26/Math.log10(26)).min(ret)
 			return ret;
 		},
 		effDisp(x) { return format(x.sub(1).times(100))+"% stronger" },
@@ -122,11 +121,7 @@ const MACHINES = {
 	
 	lvlCost(res) {
 		let e = player.ma.enhancements
-		if (e.gte(4)) e = e.times(0.8)
-		if (e.gte(4)) e = Decimal.pow(2, e.sub(4)).times(3.7)
 		if (res=="ma") {
-			if (e.gte(3.5)) e = e.pow(1.5).div(Math.sqrt(3.5)).times(1.3)
-			else if (e.gte(3)) e = e.pow(2).div(2.5)
 			return Decimal.pow(10, e.pow(2).plus(1))
 		} else return e.plus(1).pow(2).plus(14).floor()
 	},
